@@ -19,38 +19,40 @@ async function getFestivals(): Promise<IRecordLabel[]> {
     if (Array.isArray(festivals)) {
       // Valid data processing
       festivals.forEach((festival: IEAMusicFestival) => {
-        festival.bands.forEach((band: IEABand) => {
-          let recordLabelName: string =
-            band.recordLabel && band.recordLabel.length > 0
-              ? band.recordLabel
-              : '<Uncategorised/Missing record labels>';
+        if (Array.isArray(festival.bands)) {
+          festival.bands.forEach((band: IEABand) => {
+            if (band && typeof band.name === 'string') {
+              let recordLabelName: string =
+                band.recordLabel || '<Uncategorised/Missing record labels>';
 
-          // Checks for a valid band name
-          if (band.name && band.name.length > 0) {
-            const bandName: TBandName = band.name;
+              // Checks for a valid band name
+              if (band.name.length > 0) {
+                const bandName: TBandName = band.name;
 
-            // Check if 'recordLabelName' doesn't already exist
-            if (!recordLabelsMap.has(recordLabelName)) {
-              recordLabelsMap.set(
-                recordLabelName,
-                new Map<TBandName, TFestivalName[]>()
-              );
+                // Check if 'recordLabelName' doesn't already exist
+                if (!recordLabelsMap.has(recordLabelName)) {
+                  recordLabelsMap.set(
+                    recordLabelName,
+                    new Map<TBandName, TFestivalName[]>()
+                  );
+                }
+
+                // Check if 'bandName' doesn't already exist
+                if (!recordLabelsMap.get(recordLabelName)?.has(bandName)) {
+                  recordLabelsMap.get(recordLabelName)?.set(bandName, []);
+                }
+
+                if (festival.name && festival.name.length > 0) {
+                  // Push 'festival.name' to recordLabels > bandName collection
+                  recordLabelsMap
+                    .get(recordLabelName)
+                    ?.get(bandName)
+                    ?.push(festival.name);
+                }
+              }
             }
-
-            // Check if 'bandName' doesn't already exist
-            if (!recordLabelsMap.get(recordLabelName)?.has(bandName)) {
-              recordLabelsMap.get(recordLabelName)?.set(bandName, []);
-            }
-
-            if (festival.name && festival.name.length > 0) {
-              // Push 'festival.name' to recordLabels > bandName collection
-              recordLabelsMap
-                .get(recordLabelName)
-                ?.get(bandName)
-                ?.push(festival.name);
-            }
-          }
-        });
+          });
+        }
       });
 
       const recordLabelNames: string[] = Array.from<TRecordLabelName>(
