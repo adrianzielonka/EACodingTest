@@ -3,18 +3,21 @@ import React, { useEffect, useState } from 'react';
 import getFestivals from '../../data/getFestivals';
 import RecordLabel from '../RecordLabel/RecordLabel';
 
-import type { IRecordLabel } from '../../types';
+import type { IRecordLabel, IResponse } from '../../types';
 
 type RecordLabelsProps = {};
 
 function RecordLabels(): React.ReactElement<RecordLabelsProps> {
   const [loading, setLoading] = useState<boolean>(true);
-  const [recordLabels, setRecordLabels] = useState<IRecordLabel[]>([]);
+  const [response, setResponse] = useState<IResponse<IRecordLabel>>({
+    data: [],
+    status: null,
+  });
 
   useEffect(() => {
     async function getData() {
-      const data = await getFestivals();
-      setRecordLabels(data);
+      const response = await getFestivals();
+      setResponse(response);
       setLoading(false);
     }
 
@@ -24,6 +27,12 @@ function RecordLabels(): React.ReactElement<RecordLabelsProps> {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  if (response.status !== 'Success') {
+    return <div>{response.status}</div>;
+  }
+
+  const recordLabels: IRecordLabel[] = response.data;
 
   return (
     <div>

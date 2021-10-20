@@ -1,10 +1,15 @@
-import type { IEAMusicFestival, IEABand, IRecordLabel } from '../types';
+import type {
+  IEAMusicFestival,
+  IEABand,
+  IRecordLabel,
+  IResponse,
+} from '../types';
 
 type TRecordLabelName = string;
 type TBandName = string;
 type TFestivalName = string;
 
-async function getFestivals(): Promise<IRecordLabel[]> {
+async function getFestivals(): Promise<IResponse<IRecordLabel>> {
   try {
     const recordLabelsMap: Map<
       TRecordLabelName,
@@ -12,6 +17,20 @@ async function getFestivals(): Promise<IRecordLabel[]> {
     > = new Map<TRecordLabelName, Map<TBandName, TFestivalName[]>>();
 
     const response: Response = await fetch('codingtest/api/v1/festivals');
+
+    if (response.status === 429) {
+      return {
+        data: [],
+        status: 'Too many requests! Try again shortly.',
+      };
+    }
+
+    if (!response.ok || response.status !== 200) {
+      return {
+        data: [],
+        status: 'An unexpected error occured! Try again shortly.',
+      };
+    }
 
     const festivals: IEAMusicFestival = await response.json();
 
@@ -59,28 +78,43 @@ async function getFestivals(): Promise<IRecordLabel[]> {
         recordLabelsMap.keys()
       ).sort();
 
-      return recordLabelNames.map((recordLabelName: TRecordLabelName) => {
-        const bandNames: string[] = Array.from<TBandName>(
-          recordLabelsMap.get(recordLabelName)?.keys() ?? []
-        ).sort();
+      const data: IRecordLabel[] = recordLabelNames.map(
+        (recordLabelName: TRecordLabelName) => {
+          const bandNames: string[] = Array.from<TBandName>(
+            recordLabelsMap.get(recordLabelName)?.keys() ?? []
+          ).sort();
 
-        const bands = bandNames.map((bandName: TBandName) => ({
-          name: bandName,
-          festivals:
-            recordLabelsMap.get(recordLabelName)?.get(bandName)?.sort() ?? [],
-        }));
+          const bands = bandNames.map((bandName: TBandName) => ({
+            name: bandName,
+            festivals:
+              recordLabelsMap.get(recordLabelName)?.get(bandName)?.sort() ?? [],
+          }));
 
-        return {
-          name: recordLabelName,
-          bands,
-        };
-      });
+          return {
+            name: recordLabelName,
+            bands,
+          };
+        }
+      );
+
+      return {
+        data,
+        status: 'Success',
+      };
+    } else {
+      return {
+        data: [],
+        status: 'No record labels returned',
+      };
     }
   } catch (err) {
     console.log(err);
   }
 
-  return [];
+  return {
+    data: [],
+    status: 'Failed to parse received data! Try again shortly.',
+  };
 }
 
 export default getFestivals;

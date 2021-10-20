@@ -23,40 +23,45 @@ describe('Test getFestivals function', () => {
               ],
             },
           ]),
+        ok: true,
+        status: 200,
       })
     );
 
     const data = await getFestivals();
 
-    expect(data).toEqual([
-      {
-        name: '<Uncategorised/Missing record labels>',
-        bands: [
-          {
-            name: 'Squint-281',
-            festivals: ['Twisted Tour'],
-          },
-        ],
-      },
-      {
-        name: 'Marner Sis. Recording',
-        bands: [
-          {
-            name: 'Auditones',
-            festivals: ['Twisted Tour'],
-          },
-        ],
-      },
-      {
-        name: 'Outerscope',
-        bands: [
-          {
-            name: 'Summon',
-            festivals: ['Twisted Tour'],
-          },
-        ],
-      },
-    ]);
+    expect(data).toEqual({
+      status: 'Success',
+      data: [
+        {
+          name: '<Uncategorised/Missing record labels>',
+          bands: [
+            {
+              name: 'Squint-281',
+              festivals: ['Twisted Tour'],
+            },
+          ],
+        },
+        {
+          name: 'Marner Sis. Recording',
+          bands: [
+            {
+              name: 'Auditones',
+              festivals: ['Twisted Tour'],
+            },
+          ],
+        },
+        {
+          name: 'Outerscope',
+          bands: [
+            {
+              name: 'Summon',
+              festivals: ['Twisted Tour'],
+            },
+          ],
+        },
+      ],
+    });
 
     global.fetch.mockRestore();
   });
@@ -79,18 +84,23 @@ describe('Test getFestivals function', () => {
               ],
             },
           ]),
+        ok: true,
+        status: 200,
       })
     );
 
     const data = await getFestivals();
 
-    expect(data).toEqual([
-      { name: 'ACR', bands: [{ name: 'Critter Girls', festivals: [] }] },
-      {
-        name: 'Pacific Records',
-        bands: [{ name: 'Propeller', festivals: [] }],
-      },
-    ]);
+    expect(data).toEqual({
+      status: 'Success',
+      data: [
+        { name: 'ACR', bands: [{ name: 'Critter Girls', festivals: [] }] },
+        {
+          name: 'Pacific Records',
+          bands: [{ name: 'Propeller', festivals: [] }],
+        },
+      ],
+    });
 
     global.fetch.mockRestore();
   });
@@ -120,25 +130,30 @@ describe('Test getFestivals function', () => {
               ],
             },
           ]),
+        ok: true,
+        status: 200,
       })
     );
 
     const data = await getFestivals();
 
-    expect(data).toEqual([
-      {
-        name: '<Uncategorised/Missing record labels>',
-        bands: [{ name: 'Squint-281', festivals: ['Twisted Tour'] }],
-      },
-      {
-        name: 'Marner Sis. Recording',
-        bands: [{ name: 'Auditones', festivals: ['Twisted Tour'] }],
-      },
-      {
-        name: 'Outerscope',
-        bands: [{ name: 'Summon', festivals: ['Twisted Tour'] }],
-      },
-    ]);
+    expect(data).toEqual({
+      status: 'Success',
+      data: [
+        {
+          name: '<Uncategorised/Missing record labels>',
+          bands: [{ name: 'Squint-281', festivals: ['Twisted Tour'] }],
+        },
+        {
+          name: 'Marner Sis. Recording',
+          bands: [{ name: 'Auditones', festivals: ['Twisted Tour'] }],
+        },
+        {
+          name: 'Outerscope',
+          bands: [{ name: 'Summon', festivals: ['Twisted Tour'] }],
+        },
+      ],
+    });
 
     global.fetch.mockRestore();
   });
@@ -170,25 +185,30 @@ describe('Test getFestivals function', () => {
               ],
             },
           ]),
+        ok: true,
+        status: 200,
       })
     );
 
     const data = await getFestivals();
 
-    expect(data).toEqual([
-      {
-        name: '<Uncategorised/Missing record labels>',
-        bands: [{ name: 'Squint-281', festivals: ['Twisted Tour'] }],
-      },
-      {
-        name: 'Marner Sis. Recording',
-        bands: [{ name: 'Auditones', festivals: ['Twisted Tour'] }],
-      },
-      {
-        name: 'Outerscope',
-        bands: [{ name: 'Summon', festivals: ['Twisted Tour'] }],
-      },
-    ]);
+    expect(data).toEqual({
+      status: 'Success',
+      data: [
+        {
+          name: '<Uncategorised/Missing record labels>',
+          bands: [{ name: 'Squint-281', festivals: ['Twisted Tour'] }],
+        },
+        {
+          name: 'Marner Sis. Recording',
+          bands: [{ name: 'Auditones', festivals: ['Twisted Tour'] }],
+        },
+        {
+          name: 'Outerscope',
+          bands: [{ name: 'Summon', festivals: ['Twisted Tour'] }],
+        },
+      ],
+    });
 
     global.fetch.mockRestore();
   });
@@ -197,12 +217,14 @@ describe('Test getFestivals function', () => {
     jest.spyOn(global, 'fetch').mockImplementation(() =>
       Promise.resolve({
         json: () => Promise.resolve(''),
+        ok: true,
+        status: 200,
       })
     );
 
     const data = await getFestivals();
 
-    expect(data).toEqual([]);
+    expect(data).toEqual({ status: 'No record labels returned', data: [] });
 
     global.fetch.mockRestore();
   });
@@ -221,12 +243,14 @@ describe('Test getFestivals function', () => {
               bands: [null],
             },
           ]),
+        ok: true,
+        status: 200,
       })
     );
 
     const data = await getFestivals();
 
-    expect(data).toEqual([]);
+    expect(data).toEqual({ status: 'Success', data: [] });
 
     global.fetch.mockRestore();
   });
