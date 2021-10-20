@@ -1,6 +1,7 @@
-# Getting Started with Create React App
+# Coding test for Energy Australia
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An simple app displaying a list of Record Labels, their associated Bands and the Festivals each Band has attended.
 
 ## Available Scripts
 
