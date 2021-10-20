@@ -17,3 +17,8 @@ export interface IRecordLabel {
   name: string;
   bands: IBand[];
 }
+
+export interface IResponse<TData> {
+  data: TData[];
+  status: string | null;
+}
